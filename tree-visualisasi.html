@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Family Tree Visualization</title>
+    <style>
+      #tree-container {
+        width: 1000px;
+        height: 600px;
+      }
+    </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <div id="tree-container"></div>
+    <script>
+      var data = {
+        name: "Budi",
+        gender: "Male",
+        children: [
+          {
+            name: "Dedi",
+            gender: "Male",
+            children: [
+              {
+                name: "Feri",
+                gender: "Male",
+              },
+              {
+                name: "Farah",
+                gender: "Female",
+              },
+            ],
+          },
+          {
+            name: "Dodi",
+            gender: "Male",
+            children: [
+              {
+                name: "Gugus",
+                gender: "Male",
+              },
+              {
+                name: "Gandi",
+                gender: "Male",
+              },
+            ],
+          },
+          {
+            name: "Dede",
+            gender: "Male",
+            children: [
+              {
+                name: "Hani",
+                gender: "Female",
+              },
+              {
+                name: "Hana",
+                gender: "Female",
+              },
+            ],
+          },
+          {
+            name: "Dewi",
+            gender: "Female",
+          },
+        ],
+      };
+
+      var svg = d3
+        .select("#tree-container")
+        .append("svg")
+        .attr("width", 1000)
+        .attr("height", 600);
+
+      var treeLayout = d3.tree().size([800, 400]);
+
+      var root = d3.hierarchy(data);
+
+      var links = treeLayout(root).links();
+      svg
+        .selectAll("line")
+        .data(links)
+        .enter()
+        .append("line")
+        .attr("x1", function (d) {
+          return d.source.x;
+        })
+        .attr("y1", function (d) {
+          return d.source.y;
+        })
+        .attr("x2", function (d) {
+          return d.target.x;
+        })
+        .attr("y2", function (d) {
+          return d.target.y;
+        })
+        .style("stroke", "steelblue");
+
+      var nodes = treeLayout(root).descendants();
+      var nodeEnter = svg
+        .selectAll("g")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("transform", function (d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        });
+
+      nodeEnter
+        .append("circle")
+        .attr("r", 20)
+        .attr("cx", 0) // Ubah posisi lingkaran Budi
+        .attr("cy", 0) // Ubah posisi lingkaran Budi
+        .style("fill", function (d) {
+          return d.data.gender === "Male" ? "blue" : "red";
+        });
+
+      nodeEnter
+        .append("text")
+        .text(function (d) {
+          return d.data.name;
+        })
+        .attr("dy", "0.3em")
+        .attr("text-anchor", "middle")
+        .style("fill", "white");
+    </script>
+  </body>
+</html>
